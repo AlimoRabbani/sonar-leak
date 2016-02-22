@@ -20,9 +20,9 @@ if __name__ == "__main__":
     print "pigs no"
     subprocess.call(["pigs", "no"])
     print "cp /dev/pigpio1 /home/pi/log&"
-    subprocess.call(["cp", "/dev/pigpio0", "/home/pi/log&"])
-    print "pigs nb 0 $((1<<%d))" % CLK_PIN
-    subprocess.call(["pigs", "nb", "0", "$((1<<%d))" % CLK_PIN])
+    subprocess.call(["cp", "/dev/pigpio1", "/home/pi/log&"])
+    print "pigs nb 0 %d" % (1 << CLK_PIN)
+    subprocess.call(["pigs", "nb", "0", "%d" % (1 << CLK_PIN)])
     print "sleep 30"
     subprocess.call(["sleep", "30"])
     print "pigs nc 0"
