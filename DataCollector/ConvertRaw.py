@@ -19,8 +19,10 @@ def convert(in_name, out_name):
             data = read_data_bits(input_file)
             print("0x%04x" % data, file=output_file)
             read_till_cs_low(input_file)
+    except Exception, e:
+        input_file.close()
     finally:
-        input_file.close
+        input_file.close()
     input_file.close()
     output_file.close()
 
