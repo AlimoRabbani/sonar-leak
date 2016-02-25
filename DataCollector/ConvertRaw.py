@@ -1,4 +1,5 @@
 from __future__ import print_function
+from __future__ import division
 import struct
 
 CLK_PIN = 4
@@ -9,22 +10,25 @@ VOLTAGE = 3.315
 
 def convert(in_name, out_name):
     input_file = open(in_name, 'rb')
-    output_file = open(out_name, 'w')
-
+    voltage_values = list()
     #start_seq is the number of wasted clock events before the first sample.
     start_seq = read_till_cs_low(input_file)
     try:
         while True:
             skip_first_eight_data_bits(input_file)
             data = read_data_bits(input_file)
-            print("0x%04x" % data, file=output_file)
+            voltage_values.append(convert_to_voltage(data))
             read_till_cs_low(input_file)
     except Exception, e:
         input_file.close()
     finally:
         input_file.close()
     input_file.close()
+    output_file = open(out_name, 'w')
+    for item in voltage_values:
+        print("%f" % item, file=output_file)
     output_file.close()
+    print("%d Total Samples Extracted..." % len(voltage_values))
 
 
 def print_sample(sample, message=""):
@@ -82,3 +86,7 @@ def read_data_bits(input_file):
         return data
     except Exception, e:
         raise
+
+
+def convert_to_voltage(data):
+    return VOLTAGE * (data / 0xffff)
