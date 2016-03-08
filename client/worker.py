@@ -45,11 +45,15 @@ def keepalive_worker():
         ip = s.getsockname()[0]
         s.close()
         now_time = datetime.datetime.utcnow()
-        client = connect_to_db()
-        device_collection = collection.Collection(client.sonar, "Devices")
-        device_collection.update({"device_id": Config.db_config["device_id"]},
-                                 {"$set": {"device_ip": ip,
-                                           "latest_update": now_time}})
+        try:
+            client = connect_to_db()
+            device_collection = collection.Collection(client.sonar, "Devices")
+            device_collection.update({"device_id": Config.db_config["device_id"]},
+                                     {"$set": {"device_ip": ip,
+                                               "latest_update": now_time}})
+            Config.logger.info("keepalive sent")
+        except Exception, e:
+            Config.logger.error(e)
         time.sleep(30)
 
 if __name__ == "__main__":
