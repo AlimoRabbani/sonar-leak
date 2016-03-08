@@ -50,16 +50,13 @@ def read_till_cs_low(input_file):
     seq = 0
     try:
         while True:
-            input_file.read(8) #read the garbage
+            input_file.seek(8, 1) #skip the garbage
             sample = input_file.read(4)
-            # print_sample(sample, "SKIP CS!")
             int_value = struct.unpack('<I', sample)[0]
             cs_bit = int_value >> CS_PIN & 1
             seq += 1
             if cs_bit == 1:
-                input_file.read(8) #read the garbage
-                sample = input_file.read(4)
-                # print_sample(sample, "SKIP CS!")
+                input_file.seek(12, 1) #skip the garbage
                 return seq
     except Exception, e:
         raise
@@ -68,9 +65,7 @@ def read_till_cs_low(input_file):
 def skip_first_eight_data_bits(input_file):
     try:
         for i in range(0, 16):
-            input_file.read(8)
-            sample = input_file.read(4)
-            # print_sample(sample, "SKIP BITs >> %d" % i)
+            input_file.seek(12, 1)
     except Exception, e:
         raise
 
@@ -80,7 +75,7 @@ def read_data_bits(input_file):
     bit_counter = 0
     try:
         while bit_counter < 16:
-            input_file.read(8)
+            input_file.seek(8, 1)
             sample = input_file.read(4)
             int_value = struct.unpack('<I', sample)[0]
             clk_bit = int_value >> CLK_PIN & 1
