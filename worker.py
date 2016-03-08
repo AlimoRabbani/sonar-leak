@@ -15,7 +15,7 @@ def configure_pins():
     GPIO.setup(2, GPIO.IN)
 
 if __name__ == "__main__":
-    configure_pins()
-    Sampler.start(10)
-    time.sleep(1)
+    # configure_pins()
+    # Sampler.start(10)
+    # time.sleep(1)
     ConvertRaw.convert("/home/pi/log", "/home/pi/log_cleaned")

@@ -1,14 +1,17 @@
 from __future__ import print_function
 from __future__ import division
 import struct
+import datetime
 
 CLK_PIN = 4
 CS_PIN = 18
 DATA_PIN = 2
-VOLTAGE = 3.315
+VOLTAGE = 10
 
 
 def convert(in_name, out_name):
+    print("Converter Started...")
+    start_time = datetime.datetime.now()
     input_file = open(in_name, 'rb')
     voltage_values = list()
     #start_seq is the number of wasted clock events before the first sample.
@@ -29,6 +32,9 @@ def convert(in_name, out_name):
         print("%f" % item, file=output_file)
     output_file.close()
     print("%d Total Samples Extracted..." % len(voltage_values))
+    end_time = datetime.datetime.now()
+    total_seconds = (end_time - start_time).total_seconds()
+    print("Total Time Taken: %f" % total_seconds)
 
 
 def print_sample(sample, message=""):
