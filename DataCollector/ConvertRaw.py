@@ -81,8 +81,7 @@ def read_data_bits(input_file):
             clk_bit = int_value >> CLK_PIN & 1
             data_bit = int_value >> DATA_PIN & 1
             if clk_bit == 1:
-                data += (data_bit << (15 - bit_counter))
-                # print_sample(sample, "READ BIT >> %d" % (15 - bit_counter))
+                data |= (data_bit << (15 - bit_counter))
                 bit_counter += 1
         return data
     except Exception, e:
