@@ -55,10 +55,10 @@ def keepalive_worker():
 if __name__ == "__main__":
     Config.initialize()
     keepalive_thread = threading.Thread(target=keepalive_worker)
-	keepalive_thread.daemon = True
-	keepalive_thread.start()
-    # configure_pins()
-    # Sampler.start(10)
-    # time.sleep(1)
-    # ConvertRaw.convert("/home/pi/log", "/home/pi/log_cleaned")
+    keepalive_thread.daemon = True
+    keepalive_thread.start()
+# configure_pins()
+# Sampler.start(10)
+# time.sleep(1)
+# ConvertRaw.convert("/home/pi/log", "/home/pi/log_cleaned")
 
