@@ -38,19 +38,33 @@ def configure_pins():
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(2, GPIO.IN)
 
+
 def keepalive_worker():
     while True:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(('8.8.8.8', 53))
-        ip = s.getsockname()[0]
-        s.close()
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect(('8.8.8.8', 53))
+            ip = s.getsockname()[0]
+            s.close()
+        except Exception, e:
+            Config.logger.error(e)
+            s.close()
+            ip = ''
+
+        try:
+            mac = open('/sys/class/net/wlan0/address').read().strip()
+        except Exception, e:
+            Config.logger.error(e)
+            mac = ''
+
         now_time = datetime.datetime.utcnow()
         try:
             client = connect_to_db()
             device_collection = collection.Collection(client.sonar, "Devices")
             device_collection.update({"device_id": Config.db_config["device_id"]},
                                      {"$set": {"device_ip": ip,
-                                               "latest_update": now_time}})
+                                               "latest_update": now_time,
+                                               "device_mac": mac}})
             Config.logger.info("keepalive sent")
         except Exception, e:
             Config.logger.error(e)
