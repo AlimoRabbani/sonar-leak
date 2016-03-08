@@ -61,6 +61,9 @@ if __name__ == "__main__":
     keepalive_thread = threading.Thread(target=keepalive_worker)
     keepalive_thread.daemon = True
     keepalive_thread.start()
+
+    while True:
+        time.sleep(100)
 # configure_pins()
 # Sampler.start(10)
 # time.sleep(1)
