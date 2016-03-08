@@ -27,14 +27,14 @@ def convert(in_name, out_name):
     finally:
         input_file.close()
     input_file.close()
+    read_end = datetime.datetime.now()
+    print("Time taken to read data: %f" % (read_end - start_time).total_seconds())
     output_file = open(out_name, 'w')
     for item in voltage_values:
         print("%f" % item, file=output_file)
     output_file.close()
     print("%d Total Samples Extracted..." % len(voltage_values))
-    end_time = datetime.datetime.now()
-    total_seconds = (end_time - start_time).total_seconds()
-    print("Total Time Taken: %f" % total_seconds)
+    print("Time taken to write to file: %f" % (datetime.datetime.now() - read_end).total_seconds())
 
 
 def print_sample(sample, message=""):
