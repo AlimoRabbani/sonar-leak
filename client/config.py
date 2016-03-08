@@ -9,7 +9,7 @@ import logging.handlers
 class Config:
     db_config = dict()
     logger = logging.getLogger("sonar-leak client")
-    resource_path = ""
+    resource_path = "/home/pi/sonar-leak/client/"
     log_path = "/var/log/sonar-leak/"
 
     def __init__(self):
