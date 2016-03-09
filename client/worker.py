@@ -70,16 +70,62 @@ def keepalive_worker():
             Config.logger.error(e)
         time.sleep(30)
 
+
+def perform_sampling_request(sampling_request):
+    Config.logger.info("performing sampling request")
+    start_timestamp = datetime.datetime.utcnow()
+    try:
+        Sampler.start(sampling_request["duration"])
+        time.sleep(1)
+        ConvertRaw.convert("/home/pi/log", "/home/pi/log_cleaned")
+    except Exception, e:
+        Config.logger.error(e)
+        return
+
+    try:
+        client = connect_to_db()
+        samples_collection = collection.Collection(client.sonar, "Samples")
+        sampling_collection = collection.Collection(client.sonar, "Sampling")
+        samples_collection.insert({"device_id": Config.db_config["device_id"],
+                                   "timestamp": start_timestamp,
+                                   "duration": sampling_request["duration"]})
+        sampling_collection.remove({"device_id": Config.db_config["device_id"]})
+    except Exception, e:
+        handle_db_error(client, e)
+        return
+
+    Config.logger.info("sampling request performed")
+
+
+def request_worker():
+    while True:
+        Config.logger.info("checking for new sampling requests")
+        try:
+            client = connect_to_db()
+            sampling_collection = collection.Collection(client.sonar, "Sampling")
+            sampling_request = sampling_collection.find_one({"device_id": Config.db_config["device_id"]})
+            if sampling_request:
+                Config.logger.info("new sampling request received with duration %d" % sampling_request["duration"])
+                perform_sampling_request(sampling_request)
+            else:
+                Config.logger.info("no new sampling requests received")
+        except Exception, e:
+            handle_db_error(client, e)
+
+        time.sleep(0.1)
+
+
 if __name__ == "__main__":
     Config.initialize()
+    configure_pins()
+
     keepalive_thread = threading.Thread(target=keepalive_worker)
     keepalive_thread.daemon = True
     keepalive_thread.start()
 
+    sampling_request_thread = threading.Thread(target=request_worker)
+    sampling_request_thread.daemon = True
+    sampling_request_thread.start()
+
     while True:
         time.sleep(100)
-# configure_pins()
-# Sampler.start(10)
-# time.sleep(1)
-# ConvertRaw.convert("/home/pi/log", "/home/pi/log_cleaned")
-
