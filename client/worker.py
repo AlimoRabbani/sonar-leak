@@ -116,7 +116,7 @@ def move_sample():
     url = ""
     try:
         subprocess.call(["rsync", "--remove-source-files", "/home/pi/log_cleaned", destination_file_address])
-        url = "http://blizzard.cs.uwaterloo.ca/watamart/" + destination_file_name
+        url = "http://blizzard.cs.uwaterloo.ca/watsmart/" + destination_file_name
         Config.logger.info("file moved to %s" % url)
     except Exception, e:
         Config.logger.error(e)
