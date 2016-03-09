@@ -84,7 +84,8 @@ def perform_sampling_request(sampling_request):
         time.sleep(1)
         ConvertRaw.convert("/home/pi/log", "/home/pi/log_cleaned")
         time.sleep(1)
-        url = move_sample()
+        sample_id = move_sample()
+        raw_url = "http://blizzard.cs.uwaterloo.ca/watsmart/" + sample_id + ".log"
     except Exception, e:
         Config.logger.error(e)
         return
@@ -93,10 +94,11 @@ def perform_sampling_request(sampling_request):
         client = connect_to_db()
         samples_collection = collection.Collection(client.sonar, "Samples")
         sampling_collection = collection.Collection(client.sonar, "Sampling")
-        samples_collection.insert({"device_id": Config.db_config["device_id"],
+        samples_collection.insert({"sample_id": sample_id,
+                                   "device_id": Config.db_config["device_id"],
                                    "timestamp": start_timestamp,
                                    "duration": sampling_request["duration"],
-                                   "url": url})
+                                   "raw_url": raw_url})
         sampling_collection.remove({"device_id": Config.db_config["device_id"]})
         client.close()
     except Exception, e:
@@ -111,17 +113,16 @@ def string_generator(size=16, chars=string.ascii_uppercase + string.digits):
 
 
 def move_sample():
-    destination_file_name = Config.db_config["device_id"] + "_" + string_generator() + ".log"
+    sample_id = string_generator()
+    destination_file_name = sample_id + ".log"
     destination_file_address = "amrabban@blizzard.cs.uwaterloo.ca:~/sonar_data/" + destination_file_name
-    url = ""
     try:
         subprocess.call(["rsync", "--remove-source-files", "/home/pi/log_cleaned", destination_file_address])
-        url = "http://blizzard.cs.uwaterloo.ca/watsmart/" + destination_file_name
         Config.logger.info("file moved to %s" % url)
+        return sample_id
     except Exception, e:
         Config.logger.error(e)
-    return url
-
+    return ""
 
 def request_worker():
     while True:
