@@ -111,10 +111,15 @@ def string_generator(size=16, chars=string.ascii_uppercase + string.digits):
 
 
 def move_sample():
-    destination_file_name = Config.db_config["device_id"] + string_generator() + ".log"
+    destination_file_name = Config.db_config["device_id"] + "_" + string_generator() + ".log"
     destination_file_address = "amrabban@blizzard.cs.uwaterloo.ca:~/sonar_data/" + destination_file_name
-    subprocess.call(["rsync", "--remove-source-files", "/home/pi/log_cleaned", destination_file_address])
-    url = "http://blizzard.cs.uwaterloo.ca/watamart/" + destination_file_name
+    url = ""
+    try:
+        subprocess.call(["rsync", "--remove-source-files", "/home/pi/log_cleaned", destination_file_address])
+        url = "http://blizzard.cs.uwaterloo.ca/watamart/" + destination_file_name
+        Config.logger.info("file moved to %s" % url)
+    except Exception, e:
+        Config.logger.error(e)
     return url
 
 
