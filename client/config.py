@@ -36,4 +36,4 @@ class Config:
         logger.addHandler(file_handler)
         logger.addHandler(console_handler)
 
-        Config.logger.info("Configurations loaded...")
+        Config.logger.info("configurations loaded...")

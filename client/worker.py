@@ -5,6 +5,9 @@ import RPi.GPIO as GPIO
 import time
 import threading
 from config import Config
+import subprocess
+import random
+import string
 
 from pymongo import MongoClient
 from pymongo import collection
@@ -66,18 +69,22 @@ def keepalive_worker():
                                                "latest_update": now_time,
                                                "device_mac": mac}})
             Config.logger.info("keepalive sent")
+            client.close()
         except Exception, e:
-            Config.logger.error(e)
+            handle_db_error(client, e)
         time.sleep(30)
 
 
 def perform_sampling_request(sampling_request):
     Config.logger.info("performing sampling request")
     start_timestamp = datetime.datetime.utcnow()
+    url = ""
     try:
         Sampler.start(sampling_request["duration"])
         time.sleep(1)
         ConvertRaw.convert("/home/pi/log", "/home/pi/log_cleaned")
+        time.sleep(1)
+        url = move_sample()
     except Exception, e:
         Config.logger.error(e)
         return
@@ -88,13 +95,27 @@ def perform_sampling_request(sampling_request):
         sampling_collection = collection.Collection(client.sonar, "Sampling")
         samples_collection.insert({"device_id": Config.db_config["device_id"],
                                    "timestamp": start_timestamp,
-                                   "duration": sampling_request["duration"]})
+                                   "duration": sampling_request["duration"],
+                                   "url": url})
         sampling_collection.remove({"device_id": Config.db_config["device_id"]})
+        client.close()
     except Exception, e:
         handle_db_error(client, e)
         return
 
     Config.logger.info("sampling request performed")
+
+
+def string_generator(size=16, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+
+def move_sample():
+    destination_file_name = Config.db_config["device_id"] + string_generator() + ".log"
+    destination_file_address = "amrabban@blizzard.cs.uwaterloo.ca:~/sonar_data/" + destination_file_name
+    subprocess.call(["rsync", "--remove-source-files", "/home/pi/log_cleaned", destination_file_address])
+    url = "http://blizzard.cs.uwaterloo.ca/watamart/" + destination_file_name
+    return url
 
 
 def request_worker():
@@ -109,6 +130,7 @@ def request_worker():
                 perform_sampling_request(sampling_request)
             else:
                 Config.logger.info("no new sampling requests received")
+            client.close()
         except Exception, e:
             handle_db_error(client, e)
 

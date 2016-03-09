@@ -5,8 +5,11 @@
                 <h3 class="panel-title">Past Samples</h3>
             </div>
             <div class="panel-body">
+            {% for sample in past_samples %}
                 <div class="row" style="padding-left:20px; padding-right:25px;">
+                    {{ sample["timestamp"] }}
                 </div>
+            {% endfor %}
             </div>
         </div>
     </div>
