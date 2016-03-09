@@ -145,6 +145,7 @@ def request_worker():
 
 if __name__ == "__main__":
     Config.initialize()
+    time.sleep(5)
     configure_pins()
 
     keepalive_thread = threading.Thread(target=keepalive_worker)
