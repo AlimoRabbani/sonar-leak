@@ -78,7 +78,6 @@ def keepalive_worker():
 def perform_sampling_request(sampling_request):
     Config.logger.info("performing sampling request")
     start_timestamp = datetime.datetime.utcnow()
-    url = ""
     try:
         Sampler.start(sampling_request["duration"])
         time.sleep(1)
@@ -118,11 +117,12 @@ def move_sample():
     destination_file_address = "amrabban@blizzard.cs.uwaterloo.ca:~/sonar_data/" + destination_file_name
     try:
         subprocess.call(["rsync", "--remove-source-files", "/home/pi/log_cleaned", destination_file_address])
-        Config.logger.info("file moved to %s" % url)
+        Config.logger.info("file moved to blizzard")
         return sample_id
     except Exception, e:
         Config.logger.error(e)
     return ""
+
 
 def request_worker():
     while True:
