@@ -2,3 +2,5 @@
 client/config_db.json
 
 server/sonarVenv/
+
+server/insert_to_db.py
