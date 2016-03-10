@@ -1,0 +1,54 @@
+<script>
+$(document).ready(function() {
+    $("#fftGraphLink").click(function(e) {
+        update_fft_graph($(this).attr('sample_id'));
+        e.preventDefault();
+    });
+
+    var fftData = [];
+
+    initialize_fft_graph("{{ past_samples[0]['sample_id'] }}");
+
+    function initialize_fft_graph(sample_id) {
+        $.get( "{{ url_for('user_views.device_get_fft', device_id=device.device_id) }}", {sample_id: sample_id})
+        .success(function(data) {
+            fftData = eval(data);
+            $('#fftChart').highcharts({
+                chart: {
+                    zoomType: 'x',
+                    type: 'line',
+                    alignTicks: false
+                },
+                credits: {enabled: false},
+                title: {text: ''},
+                xAxis: {title: {text: "Frequency (Hz)"}, min: 0, max:5000},
+                yAxis: {min: 0, max: 2, tickInterval: 0.1},
+                legend: {enabled: false},
+                plotOptions: {line: {lineWidth: 2}},
+                series: [{type: 'line', color: '#D80030', name: 'FFT', data: fftData}]
+            });
+        })
+        .fail(function() {
+            alert("network fail");
+        });
+    }
+    function update_fft_graph(sample_id) {
+        $('#fftChart').highcharts().destroy();
+        initialize_fft_graph(sample_id)
+	}
+});
+</script>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">FFT Graph</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row" style="padding-left:10px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="fftChart" style="height: 200px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

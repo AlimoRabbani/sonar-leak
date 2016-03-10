@@ -1,0 +1,62 @@
+<script>
+$(document).ready(function() {
+    $("#pressureGraphLink").click(function(e) {
+        update_pressure_graph($(this).attr('sample_id'));
+        e.preventDefault();
+    });
+
+    var d = new Date();
+    var timezoneOffset = d.getTimezoneOffset();
+    Highcharts.setOptions({
+        global: {
+            timezoneOffset: timezoneOffset
+        }
+    });
+
+    var pressureData = [];
+
+    initialize_pressure_graph("{{ past_samples[0]['sample_id'] }}");
+
+    function initialize_pressure_graph(sample_id) {
+        $.get( "{{ url_for('user_views.device_get_timeseries', device_id=device.device_id) }}", {sample_id: sample_id})
+        .success(function(data) {
+            pressureData = eval(data);
+            $('#pressureChart').highcharts({
+                chart: {
+                    zoomType: 'x',
+                    type: 'line',
+                    alignTicks: false
+                },
+                credits: {enabled: false},
+                title: {text: ''},
+                xAxis: {title: {text: "Time (milliseconds)"}, minRange: 5000, min: 0},
+                yAxis: {title: {text: 'Pressure (Pa)'}, min: -20, max: 20, tickInterval: 5},
+                legend: {enabled: false},
+                plotOptions: {line: {lineWidth: 2}},
+                series: [{type: 'line', color: '#19D11C', name: 'Pressure', data: pressureData}]
+            });
+        })
+        .fail(function() {
+            alert("network fail");
+        });
+    }
+    function update_pressure_graph(sample_id) {
+        $('#pressureChart').highcharts().destroy();
+        initialize_pressure_graph(sample_id)
+	}
+});
+</script>
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Pressure Timeseries</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row" style="padding-left:10px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="pressureChart" style="height: 200px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+{% macro render_login_text(field) %}
+<div class="form-group {% if field.errors %} error {% endif %}">
+    {{ field(class='form-control', placeholder=field.label.text)| safe }}
+</div>
+{% endmacro %}}
+
+{% macro render_recaptcha() %}
+    <div class="g-recaptcha form-group" data-sitekey="6LeOyxUTAAAAAA8O9SwC6Z8COSLiKAYRyHiopeUD"></div>
+{% endmacro %}}
+
+{% macro render_change_pass(field) %}
+<div class="form-group">
+    {{ field(class='form-control', placeholder=field.label.text)| safe }}
+    {% if field.errors %}
+    {% for error in field.errors %}
+    <p class="text-danger" style="margin-top:5px;">
+        <strong>{{ error }}</strong>
+    </p>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endmacro %}}
+
+
+{% macro render_login_check(field) %}
+<div class="form-group">
+    <label class="checkbox" style="color:white; margin-top:-7px; padding-left: 5px;">
+        <small>{{ field.label.text }}</small><br/>
+        {{ field(style="margin-left:35px;")|safe }}
+    </label>
+</div>
+{% endmacro %}}

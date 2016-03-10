@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WatSmart">
+    <meta name="author" content="Alimohammad Rabbani">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/spotstar-16x16.png') }}" sizes="16x16">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/spotstar-24x24.png') }}" sizes="24x24">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/spotstar-48x48.png') }}" sizes="48x48">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/spotstar-64x64.png') }}" sizes="64x64">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/spotstar-96x96.png') }}" sizes="96x96">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/spotstar-128x128.png') }}" sizes="128x128">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/spotstar-256x256.png') }}" sizes="256x256">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/spotstar-512x512.png') }}" sizes="512x512">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/spotstar-32x32.png') }}" sizes="32x32">
+
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/slider.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="{{ url_for('static', filename='js/ie8-responsive-file-warning.js')}}"></script><![endif]-->
+    <script src="{{ url_for('static', filename='js/ie-emulation-modes-warning.js')}}"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <title>WatSmart - {% block title %}{% endblock %}</title>
+</head>
+<body id="page-top" data-spy="scroll" data-target="#sidenav">
+<a class="anchor" id="top"></a>
+<div id="wrap">
+    {%include 'navbar.html' %}
+    {% block content %}{% endblock %}
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap-slider.js')}}"></script>
+    <div id="push"></div>
+</div>
+{%include 'footer.html' %}
+{% block body_bottom %}{% endblock %}
+</body>
+</html>

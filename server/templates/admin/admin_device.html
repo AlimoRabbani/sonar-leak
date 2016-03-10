@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ device.device_location }}{% endblock %}
+{% block content %}
+<div class="container" style="padding-top:20px;">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <ol class="breadcrumb">
+                <li><a href="{{ url_for('admin_views.index') }}">Admin Home</a></li>
+                <li><a href="{{ url_for('admin_views.devices_view') }}">Devices</a></li>
+                <li class="active">{{ device.device_location }}</li>
+            </ol>
+        </div>
+    </div>
+    {% include 'device/info.html' %}
+    {% if device.get_training() %}
+    {% include 'device/training_active.html' %}
+    {% endif %}
+    {% include 'device/offset.html' %}
+    {% include 'device/comfort.html' %}
+    {% include 'device/occupancy.html' %}
+    {% if not device.get_training() %}
+    {% include 'device/training.html' %}
+    {% endif %}
+</div>
+{% endblock %}
+{% block body_bottom %}
+<script src="{{ url_for('static', filename='js/jquery.simpleWeather.min.js')}}"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+{% endblock %}

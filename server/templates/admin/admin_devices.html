@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Admin Devices{% endblock %}
+{% block content %}
+<script type="text/javascript">
+$(document).ready(function(){
+    $(".admin-thumbnail-danger, .admin-thumbnail-warning").tooltip();
+});
+</script>
+<div class="container" style="padding-top:20px;">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <ol class="breadcrumb">
+                <li><a href="{{ url_for('admin_views.index') }}">Admin Home</a></li>
+                <li class="active">Devices</li>
+            </ol>
+        </div>
+    </div>
+    {% for device in devices %}
+    <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4">
+            <a href="{{ url_for('admin_views.device_view', device_id=device.device_id) }}"
+               class="thumbnail{% if not device.is_alive %} admin-thumbnail-danger{% elif device.is_overheating %} admin-thumbnail-warning{% endif %}"
+               style="text-decoration: none !important; color: black;" data-toggle="tooltip" data-placement="top"
+               title="{% if not device.is_alive %}Device Lost!{% elif device.is_overheating %}Overheating!{% endif %}">
+                    <div class="text-center">
+                        <h4>{{ device.device_location }}</h4>
+                        <h5>{{ device.device_owner }}</h5>
+                    </div>
+            </a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

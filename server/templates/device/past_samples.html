@@ -20,6 +20,8 @@
                         <td>{{ sample["sample_id"] }}</td>
                         <td>{{ sample["duration"] }} seconds</td>
                         <td><a href="{{ sample['raw_url'] }}">Link</a></td>
+                        <td><a href="#" id="pressureGraphLink" sample_id="{{ sample['sample_id'] }}">Visualize</a></td>
+                        <td><a href="#" id="fftGraphLink" sample_id="{{ sample['sample_id'] }}">Visualize</a></td>
                     </tr>
                 {% endfor %}
                 </table>

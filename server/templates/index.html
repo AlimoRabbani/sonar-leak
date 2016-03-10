@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}My Comfort Management Tool{% endblock %}
+{% block content %}
+{% from "_formhelpers.html" import render_login_text %}
+{% from "_formhelpers.html" import render_login_check %}
+<div class="jumbotron" style="padding-top:30px; padding-bottom:25px;">
+    {% if error %}
+    <div class="alert alert-danger text-center">
+        {{ error }}
+    </div>
+    {% endif %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <p>
+                    <strong>SPOT*</strong>
+                    <small>
+                        makes offices more comfortable and office buildings more energy efficient.
+                        It has a fan/heater that is controlled by a <a href="http://www.raspberrypi.org/products/model-b-plus/">Raspberry Pi</a> to maintain
+                        office workers' personalized comfort. We use a motion sensor to detect occupancy
+                        and a temperature sensor to estimate comfort using the <a href="http://smap.cbe.berkeley.edu/comforttool">PMV equation</a>.
+                        <br/><br/>
+                        Currently, we are deploying 70 instances of SPOT* on UWaterloo campus.
+                        In addition to benefits for the users, this deployment
+                        will help us better understand the dynamics of an HVAC system in a building and
+                        integrate our system into the building's HVAC system.
+                    </small>
+                </p>
+                <p class="text-warning">
+                    <strong><small>To learn more about SPOT*, please click here.</small></strong>
+                </p>
+            </div>
+            <div class="col-lg-5 col-md-6 col-lg-offset-1">
+                <img src="{{ url_for('static', filename='images/spotstar_all_in_one.jpg')}}" alt="SPOT* Box with Screen" class="img-thumbnail">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Who is doing this?</h3>
+            <p>
+                The <a href="http://iss4e.ca">ISS4E Lab</a> at the University of Waterloo started the SPOT project.
+                It is supervised by <a href="http://blizzard.cs.uwaterloo.ca/keshav/">Prof. Keshav</a>, and currently,
+                Alimohammad Rabbani, Milad Khaki, and Costin Ograda-Bratu
+                are involved in the project. We are open to collaborate with other universities and groups on this project too.
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h3>What is this website for?</h3>
+            <p>
+                This website is created primarily for users to control and monitor their SPOT* instances.
+                In addition, it provides admin tools to monitor the deployment and start troubleshooting if something goes wrong.
+                The website also provides a brief description of SPOT* for people who are interested in this area of research.
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h3>How can I help?</h3>
+            <p>
+                If you find yourself interested in this project, you can always contact us
+                at <a href="mailto:cogradab@uwaterloo.ca"> cogradab@uwaterloo.ca</a>. We are looking forward to
+                your comments and suggestions and will be more than happy to have you on board if you are interested.
+            </p>
+        </div>
+    </div>
+</div> <!-- /container -->
+{% endblock %}

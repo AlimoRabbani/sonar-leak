@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+{% from "_formhelpers.html" import render_login_text %}
+{% from "_formhelpers.html" import render_login_check %}
+<div class="jumbotron" style="padding-top:30px; padding-bottom:25px;">
+    <div class="container">
+        <div class="row">
+            <h1>Welcome to SPOTlight Admin!</h1>
+            <p>
+                We created SPOTlight to make offices more comfortable and office buildings more energy efficient.
+                Currently, about 60 SPOTlight instances are being deployed in Davis Center on UWaterloo campus.
+                In addition to benefits for the users, this deployment will help us better understand the dynamics of
+                an HVAC system in a building and integrate our system into the building's HVAC system.
+            </p>
+        </div>
+        <div class="row text-center">
+            <p><a class="btn btn-primary" href="{{ url_for('admin_views.devices_view') }}" role="button">List of all devices &raquo;</a></p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    {% if error %}
+    <div class="alert alert-danger text-center">
+        {{ error }}
+    </div>
+    {% endif %}
+    <!-- Example row of columns -->
+    <hr>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Who is doing this?</h2>
+            <p>
+                A group of researchers at University of Waterloo started this project.
+                The project belongs to <a href="http://iss4e.ca">ISS4E Lab</a> and is supervised by
+                <a href="http://blizzard.cs.uwaterloo.ca/keshav/">Prof. Keshav</a>.
+                Currently, <a href="http://onible.com/">Alimohammad Rabbani</a>, Milad Khaki, and Costin Ograda-Bratu
+                are involved in the project. We are open to collaborate with other universities and groups on this project too.
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h2>What is this website?</h2>
+            <p>
+                This website is created primarily for users to control and monitor their SPOTlight instances.
+                It also provides admin tools to monitor the deployment and start troubleshooting if something goes wrong.
+                The website also provides a brief description of SPOTlight for people who are interested in this kind of research.
+            </p>
+        </div>
+        <div class="col-md-4">
+            <h2>How can I help?</h2>
+            <p>
+                If you find yourself interested in this project, you can always contact us
+                at <a href="mailto:amrabban@uwaterloo.ca"> amrabban@uwaterloo.ca</a>. We are looking forward to
+                your comments and suggestions and we will be more than happy to have you on board if you are interested.
+            </p>
+        </div>
+    </div>
+    <hr>
+</div> <!-- /container -->
+{% endblock %}

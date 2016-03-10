@@ -1,0 +1,33 @@
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Device Information</h3>
+            </div>
+            <div class="panel-body">
+                <div class="row" style="padding-left:20px; padding-right:25px;">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="well" style="margin-bottom: 0px;">
+                            <div class="row">
+                                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4"><strong>IP:</strong></div>
+                                <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8">{{ device.device_ip }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4"><strong>Location:</strong></div>
+                                <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8">{{ device.device_location }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4"><strong>Mac Address:</strong></div>
+                                <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8">{{ device.device_mac }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4"><strong>Latest Update:</strong></div>
+                                <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8">{% if device.latest_update_time %}{{ device.latest_update_time.strftime("%Y-%b-%d %H:%M:%S %Z") }}{% else %}None{% endif %}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

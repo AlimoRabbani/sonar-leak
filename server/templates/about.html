@@ -1,0 +1,506 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+{% block content %}
+{% from "_formhelpers.html" import render_login_text %}
+{% from "_formhelpers.html" import render_login_check %}
+{% if error %}
+<div class="alert alert-danger text-center">
+    {{ error }}
+</div>
+{% endif %}
+<div class="container">
+<!-- Intro Section -->
+<div class="row">
+<div class="col-lg-2 col-md-3">
+    <div class="bs-docs-sidebar hidden-print hidden-xs hidden-sm" data-spy="affix" id="sidenav" style="top: 100px;">
+        <ul class="nav bs-docs-sidenav">
+            <li class="active">
+                <a class="page-scroll" href="#intro">Introduction</a>
+            </li>
+            <li>
+                <a class="page-scroll" href="#design">Design</a>
+                <ul class="nav">
+                    <li><a class="page-scroll" href="#design-goals">Goals</a></li>
+                    <li>
+                        <a class="page-scroll" href="#design-architecture">Architecture</a>
+                        <ul class="nav">
+                            <li><a class="page-scroll" href="#design-actuation-sensing">Actuation, Sensing</a></li>
+                            <li><a class="page-scroll" href="#design-controlapp">Control App</a></li>
+                            <li><a class="page-scroll" href="#design-dbapp">DB App</a></li>
+                            <li><a class="page-scroll" href="#design-webapp">Web APP</a></li>
+                            <li><a class="page-scroll" href="#design-gui">GUI</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a class="page-scroll" href="#implementation">Implementation</a>
+                <ul class="nav">
+                    <li><a class="page-scroll" href="#implementation-actuation-sensing">Actuation & Sensing</a>
+                        <ul class="nav">
+                            <li><a class="page-scroll" href="#implementation-heating-cooling">Heating & Cooling</a></li>
+                            <li><a class="page-scroll" href="#implementation-sensing-box">Sensing Box</a></li>
+                            <li><a class="page-scroll" href="#implementation-actuation-box">Actuation Box</a></li>
+                            <li><a class="page-scroll" href="#implementation-deviceapp">Device App</a></li>
+                        </ul>
+                    </li>
+                    <li><a class="page-scroll" href="#implementation-controlapp">Control App</a></li>
+                    <li><a class="page-scroll" href="#implementation-db">DB App</a></li>
+                    <li><a class="page-scroll" href="#implementation-webapp">Web APP</a></li>
+                    <li><a class="page-scroll" href="#implementation-gui">GUI</a></li>
+                </ul>
+            </li>
+            <li>
+                <a class="page-scroll" href="#setup-modes">Setup Modes</a>
+                <ul class="nav">
+                    <li><a class="page-scroll" href="#setup-privacy">Privacy-preserving</a></li>
+                    <li><a class="page-scroll" href="#setup-energy">Energy-aware</a></li>
+                    <li><a class="page-scroll" href="#setup-cost">Cost-effective</a></li>
+                </ul>
+            </li>
+            <li>
+                <a class="page-scroll" href="#resources">Resources</a>
+                <ul class="nav">
+                    <li><a class="page-scroll" href="#resources-publications">Publications</a></li>
+                    <li><a class="page-scroll" href="#resources-software">Software</a></li>
+                    <li><a class="page-scroll" href="#resources-hardware">Hardware</a></li>
+                    <li><a class="page-scroll" href="#resources-docs">Documents</a></li>
+                </ul>
+            </li>
+
+        </ul>
+        <a class="back-to-top page-scroll" href="#page-top">
+            Back to top
+        </a>
+    </div>
+</div>
+<div class="col-lg-10 col-md-9 col-sm-12 col-xs-12">
+<section id="intro" class="about-section">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12" style="padding: 0;">
+            <h2>Introduction</h2>
+            <p>
+                SPOT* makes offices more comfortable and office buildings more energy efficient.
+                It has a temperature sensor, a motion sensor, and a fan/heater which are all connected to
+                a Raspberry Pi. SPOT* learns user preferences during a training period and uses that
+                training to control the fan/heater.
+            </p>
+            <p>
+                Using the motion sensor, it understands when the station is occupied, so it does not
+                heat or cool when it is not necessary. Using the temperature sensor and the training,
+                it knows when it should heat, cool, or simply do nothing. With its flexible architecture,
+                we can easily make it privacy-preserving, or potentially, energy-aware.
+            </p>
+            <div class="col-lg-6 col-md-7 col-sm-7" style="display: inline-block; float:right; padding-bottom:10px;">
+                <img src="{{ url_for('static', filename='images/costin-with-spotlight.jpg')}}" alt="SPOT* Demonstration" class="img-thumbnail">
+            </div>
+            <p>
+                This work extends prior work on the SPOT and SPOT+ personal thermal
+                control systems. Both systems use the Predicted Personal Vote (PPV) model
+                to automatically adjust room heating to maintain a desired comfort level.
+                SPOT is <strong>reactive</strong>, in that it only heats the room when the worker
+                is actually present, and SPOT+ is <strong>pro-active</strong>, pre-heating the workspace before
+                the arrival of the worker, or turn off heating in anticipation of the worker's departure.
+                SPOT* differs from both systems in five significant ways. First, it controls <strong>both</strong>
+                heating and cooling, so can be used both in winter and in summer. Second, it is about
+                an order of magnitude <strong>less expensive</strong>. Third, it implements an innovative
+                software architecture that allows <strong>flexible tradeoffs</strong> between cost, privacy,
+                and data durability. Specifically, it allows most software components to execute either on
+                the thermal controller, in the Internet cloud, or on the worker's smartphone.
+                Fourth, the use of a fan instead of a radiant heater makes it possible to
+                <strong>rapidly react</strong> to worker discomfort. Finally, it is far less intrusive than
+                our two prior systems, because it does not use a camera.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section id="design" class="about-section">
+    <div class="row">
+        <h2>Design</h2>
+    </div>
+</section>
+<section id="design-goals" class="about-section" style="padding-top:30px;">
+    <div class="row">
+        <h4>Goals</h4>
+        <ul>
+            <li>
+                <strong>Reduce Cost</strong>
+                Our primary design goal is to reduce the price of SPOT*,
+                compared to SPOT. The main reason our two prior systems were
+                expensive was because they monitored workers using a Kinect camera
+                that is directly connected to a powerful processing unit (i.e. a PC with Microsoft Windows)
+                which accounts for about 50% of the overall system cost.
+            </li><br/>
+            <li>
+                <strong>Allow both Cooling and Heating</strong>
+                A secondary design goal is for SPOT* to provide comfort both in
+                summer and in winter, unlike SPOT, which only addressed heating.
+            </li><br/>
+            <li>
+                <strong>Keep User Data Private</strong>
+                User occupancy data is inherently private information that should not
+                be exposed to third parties. We would like to guarantee this
+                despite allowing SPOT* to be on the Internet.
+            </li><br/>
+            <li>
+                <strong>Improve User Experience</strong>
+                SPOT's infrared camera, used for clothing level detection,
+                closely tracks user movements. Some users found this unnerving,
+                and therefore, one of our goals in building SPOT* is to not require
+                observation of users with a web or infrared camera.
+            </li>
+        </ul>
+    </div>
+</section>
+<section id="design-architecture" class="about-section">
+    <div class="row">
+        <h4>Architecture</h4>
+        <div class="col-lg-7 col-md-8 col-sm-8" style="display: inline-block; float:right; padding-bottom:10px;">
+            <img src="{{ url_for('static', filename='images/basic_architecture.png')}}" alt="SPOT* Big Picture" class="img-responsive">
+        </div>
+        <p>
+            Our overall system architecture is shown in this figure.
+            Each of the software components shown on the right hand side can be executed on a per-office
+            embedded compute platform, in the cloud, or even on a worker's smartphone.
+        </p>
+        <ul>
+            <li id="design-actuation-sensing" class="about-section">
+                <h5>Actuation, Sensing, and Device App:</h5>
+                This part of the system consists of a heating/cooling device, sensors, actuators,
+                and a <strong>device app</strong> executing on the RPi. The device app communicates with
+                the control app to send updates, and receive and execute commands. It requires minimal
+                computation, and therefore can even be executed on an even lighter-weight platform, such
+                as a mote. In fact, before we decided on using an RPi, we built a prototype system using
+                a Zolertia Z1 mote. However, the Z1 turned out to be much more expensive than the RPi!
+            </li>
+            <li id="design-controlapp" class="about-section">
+                <h5>Control Application:</h5>
+                Based on occupancy and comfort, the control app decides to turn the fan/heater on or off,
+                determines the fan's speed, and communicates with the device app to carry out the command.
+                The control app can run on the RPi or the cloud. The control app also communicates with
+                the DB app to log all events--such as changes in temperature and occupancy and changes
+                in device status--and to receive user feedback.
+            </li>
+            <li id="design-dbapp" class="about-section">
+                <h5>Data Storage:</h5>
+                SPOT* keeps a log of measurements, events, and user feedback. The data can be stored on
+                the RPi for better privacy, or can be moved to the cloud to provide better reliability and
+                availability, and enable coordination with a centralized building HVAC system in the
+                future. We use the data for system administration and debugging, making control decisions
+                based on user input, and providing feedback to the user in the form of historical charts.
+                <br/><br/>
+                The data storage component consists of a database, and a DB application that provides an
+                interface for other software components. For better security, this component
+                limits database access to certain functions, such as inserting and querying occupancy and
+                temperature, querying users, and inserting device states.
+            </li>
+            <li id="design-webapp" class="about-section">
+                <div class="col-lg-6 col-md-7 col-sm-7" style="display: inline-block; float:right; padding-bottom:10px;">
+                    <img src="{{ url_for('static', filename='images/spotstar_with_screen.jpg')}}" alt="SPOT* with Touch Screen" class="img-thumbnail">
+                </div>
+                <h5>Web Application:</h5>
+                The web application both provides information to SPOT* users and administrators,
+                and receives feedback from them. The web application can run on the RPi
+                (to provide access only to the user), or can run in the cloud (to enable universal access).
+                During the training phase, the web application collects votes from the user to determine
+                coefficients for the PPV equation. Specifically, it computes the anticipated comfort
+                from the PMV equation and collects user votes on comfort level. It then computes a
+                linear regression to translate from the PMV value to the PPV value. It also provides
+                a manual override for users to deal with exceptional conditions. In addition, it visualizes
+                measurements and events for users to monitor their comfort and occupancy.
+            </li>
+            <li id="design-gui" class="about-section">
+                <h5>Graphical User Interface:</h5>
+                The GUI is the only software component of the system visible to users.
+                In a networked setup, the GUI can be invoked on any device with an internet browser
+                (e.g. PC, smart phone, RPi). For standalone installations, we have added a 7-inch
+                touch screen to the RPi and installed it on the SPOT* box. The user can access the GUI
+                directly from the box.
+            </li>
+        </ul>
+    </div>
+</section>
+
+<section id="implementation" class="about-section">
+    <div class="row">
+        <h2>Implementation</h2>
+    </div>
+</section>
+
+<section id="implementation-actuation-sensing" class="about-section">
+    <div class="row">
+        <h4>Actuation & Sensing</h4>
+        <p>
+            Actuation and sensing consists of a desktop fan/heater
+            to maintain user comfort, sensors to measure air temperature
+            and occupancy, actuators to turn the fan/heater on or off and
+            control its speed, an RPi that acts as both a network and a compute node,
+            and a device application that runs on the RPi to communicate with other software
+            elements of the system.
+        </p>
+        <p>
+            This component consists of two hardware devices that we designed and implemented:
+            an actuation box, and a sensing box. The <strong>actuation box</strong> contains the RPi and actuators,
+            and its modular design allows connecting different types of heaters and fans. The sensors are
+            placed in a separate <strong>sensing box</strong> that is closer to the user.
+            Here, we describe how each of these components are implemented and how they work together.
+        </p>
+        <ul>
+            <li id="implementation-heating-cooling" class="about-section">
+                <h5>Heating and Cooling:</h5>
+                Unlike SPOT, which uses a space heater for room heating,
+                SPOT* uses a fan/heater to provide comfort in both winters and summers.
+                We modified the Royal Sovereign HFN-20, to control its heating coil and cooling fan
+                independently. The two power cords in the modified version are connected to the power
+                outlets on the actuation box. The relays inside the
+                actuation box determine the state of the fan and the heating coil, and the AC power
+                control circuit sets the speed of the fan with a maximum air velocity of 2.1m/s.
+            </li>
+            <br/>
+            <li id="implementation-sensing-box" class="about-section">
+                <h5>Sensing Box</h5>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6" style="display: inline-block; float:left; padding:0; padding-right:10px;">
+                    <img src="{{ url_for('static', filename='images/spotstar_sensing_box.jpg')}}" alt="SPOT* Sensing Box" class="img-thumbnail">
+                </div>
+                We use only two sensors in SPOT*: a temperature sensor and a motion sensor.
+                Data from these sensors is used to compute the PPV value.
+                The temperature and motion sensors are thermally separated and are placed in the
+                sensing box along with an analog-to-digital converter (ADC) so that only digital
+                alues travel on the sensing communication link, reducing the effect of noise.
+                <br/><br/>
+                <strong>Temperature Sensor:</strong>
+                To obtain temperature readings, we use the AD22100 surface-mount temperature sensor
+                with 0.1&deg;C resolution. The temperature sensor has an analog output and is connected to
+                the RPi through the ADC. This sensor's temperature values are later used in PPV
+                calculations.
+                <br/><br/>
+                <strong>Occupancy Detection:</strong>
+                The AMN22111 passive infrared human detection sensor is more sensitive to slight motions,
+                and has a lower 2m detection range compared to other Panasonic AMN series sensors
+                (which have ranges up to 10m). It outputs analog values that are converted to values
+                between 0 and 1000 on the RPi. When there is no movement, the sensor output values are
+                approximately 500. Each movement causes the sensor to generate one value close to
+                1000 and another close to 0. The closer these values are to 1000 and 0, the greater the
+                intensity of movement. Therefore, over a 30-second window, a standard deviation near 0
+                means almost no movement while higher standard deviations correspond to more movements.
+                Note that unlike the Kinect system used in SPOT, which could instantly detect
+                occupancy, there is a 30s delay in detecting occupancy with this approach.
+            </li>
+            <br/>
+            <li id="implementation-actuation-box" class="about-section">
+                <h5>Actuation Box:</h5>
+                <div class="col-lg-6 col-md-7 col-sm-7" style="display: inline-block; float:right; padding-bottom:10px;">
+                    <img src="{{ url_for('static', filename='images/spotstar_actuation_box.jpg')}}" alt="SPOT* Actuation Box" class="img-thumbnail">
+                </div>
+                The actuation box physically controls the fan/heater using relays,
+                a custom made AC power control circuit, and an RPi. It has two power
+                outlets, one for the fan and one for the heater.
+                <br/><br/>
+                <strong>Relays:</strong>
+                Two RPi GPIO output pins are connected to two electromechanical
+                relays to close and open the AC circuit of the fan and the heater independently.
+                Upon receiving a command from the control app, the device app on the RPi sets
+                the two GPIO outputs to 0V or 3V respectively to execute the command.
+                <br/><br/>
+                <strong>AC Power Control Circuit:</strong>
+                We modified and built a standard AC-control circuit to control the fan speed.
+                It limits the current going through the fan using a TRIAC that modulates the current
+                based on a control signal from a 12-bit MAX5805 digital-to-analog converter (DAC).
+                The DAC's output voltage is controlled by the RPi using the I2C serial protocol.
+                This image contains the circuit as populated on a manufactured PCB.
+                <br/><br/>
+                <strong>Raspberry Pi:</strong>
+                The RPi runs Raspbian, and is connected to and powered through our custom-built
+                circuit with a 40-pin ribbon cable. It executes commands and controls status
+                lights on the box by toggling output signals on GPIO pins. In a networked setup, we use an
+                Edimax EW-7811Un USB dongle to connect the RPi to the building's
+                wireless network.
+            </li>
+            <br/>
+            <li id="implementation-deviceapp" class="about-section">
+                <h5>Device App:</h5>
+                The device app has several tasks. It collects data from sensors and transmits them
+                to the control app locally or over the network. It also executes commands received from the
+                control app. Using the I2C protocol, it reads sensor measurements from the ADC
+                connected to the RPi.
+                <br/><br/>
+                The device app collects motion data twice every second, computes the standard deviation
+                over a 30-second period, and sends it to the control app. Hailemariam et al, report that
+                occupancy can be reliably detected by finding the standard deviation of the AMN23111
+                motion sensor data every two minutes. However, we found that the more sensitive AMN22111
+                motion sensor allows us to lower the occupancy detection
+                interval from 2 minutes to 30 seconds. To reduce the amount of inter-process and network
+                communications, the device app collects motion data twice a second, computes its standard
+                deviation, and sends only this value to the control app every 30 seconds. It also reads and
+                transmits temperature every 10 seconds. Upon receiving a command from the control app, the
+                device app toggles GPIO outputs connected to relays to execute the command. In addition, it
+                communicates with the DAC using I2C protocol to alter its output and set the speed of the
+                fan. Due to the design of our selected fan/heater, to guarantee safe operation, we must
+                make sure that the fan spins with its maximum speed while the heating coil is powered.
+            </li>
+        </ul>
+    </div>
+</section>
+
+<section id="implementation-controlapp" class="about-section">
+    <div class="row">
+        <h4>Control App</h4>
+    </div>
+</section>
+<section id="implementation-db" class="about-section">
+    <div class="row">
+        <h4>Data Storage and DB App</h4>
+        <p>
+            We use MongoDB to store the data, and implement a DB app that restricts database access
+            to limited functions (e.g. inserting and querying occupancy and temperature, querying users,
+            and inserting device state) for better security. The DB app communicates with the
+            control app to log events and updates, and to provide user preferences to it. It also
+            communicates with the web app to store user preferences and provide data to the web app
+            for visualization. Because of SPOT*'s flexible architecture, we can run the DB app and the
+            MongoDB storage locally on the RPi, or in the cloud.
+        </p>
+    </div>
+</section>
+<section id="implementation-webapp" class="about-section">
+    <div class="row">
+        <h4>Web App</h4>
+        <p>
+            We design and implement the web application using the Flask
+            microframework to:
+        <ul>
+            <li>Collect votes from the user during training periods.</li>
+            <li>Provide a manual override to the user.</li>
+            <li>Visualize temperature, occupancy, and comfort data for users and administrators.</li>
+            <li>Debug, monitor, and administer.</li>
+        </ul>
+        The web application runs on a WSGI Apache instance which is proxied through a publicly
+        available Apache webserver. To ensure privacy and security, we use HTTPS and require users to
+        login with their credentials.
+        </p>
+        <p>
+        <strong>Training Period:</strong>
+        Recall that SPOT* requires training to estimate the affine translation between PMV and PPV values.
+        Users can start training periods at will. We collect votes from the users based on
+        the 7-point ASHRAE scale and match them with the PMV value at the time of voting.
+        Once the user ends the training we run a least squares linear regression on the collected
+        points to determine $f_{ppv}(pmv)$. After the training, the new PPV equation is used to predict user comfort.
+        </p>
+        <strong>Comfort Offset:</strong>
+        In addition to infrequent training, we provide a manual offset override to allow users to adjust their comfort
+        level as needed, such as when they are unwell, or when they are wearing more or fewer clothes than usual.
+        The offset is 0 by default and adjusts the PPV equation. When the offset is less than 0, the user prefers
+        cooler conditions, and when it is greater than 0, warmer conditions are preferred.
+
+    </div>
+</section>
+<section id="implementation-gui" class="about-section">
+    <div class="row">
+        <h4>Graphical User Interface</h4>
+        <p>
+            Internet browser viewable content based on jQuery
+            and Bootstrap is generated by the web app. In a networked setup, this GUI is accessible
+            on users' desktop computers and smart phones.
+        </p>
+        <p>
+            In an isolated local SPOT* setup, we equip the actuation box with a 7-inch resistive touch screen LCD.
+            The LCD is connected to the RPi using an HDMI cable through Adafruit's touch screen controller
+            board. In this setup, the data remains physically on-site and the user can access the GUI only on the box
+            from a web browser user interface.
+        </p>
+    </div>
+</section>
+
+
+
+
+<section id="setup-modes" class="about-section">
+    <div class="row">
+        <h2>Setup Modes</h2>
+    </div>
+</section>
+
+<section id="setup-privacy" class="about-section">
+    <div class="row">
+        <h4>Privacy-preserving</h4>
+    </div>
+</section>
+
+<section id="setup-energy" class="about-section">
+    <div class="row">
+        <h4>Energy-aware</h4>
+    </div>
+</section>
+
+<section id="setup-cost" class="about-section">
+    <div class="row">
+        <h4>Cost-effective</h4>
+    </div>
+</section>
+
+<section id="resources" class="about-section">
+    <div class="row">
+        <h2>Resources</h2>
+        <p>
+            We want to keep SPOT an open system that everybody can replicate and test. Therefore,
+            we provide pointers to all the materials required to build SPOT*. This includes papers
+            written about the SPOT systems, software components, and hardware maps.
+        </p>
+    </div>
+</section>
+
+<section id="resources-publications" class="about-section">
+    <div class="row">
+        <h4>Publications</h4>
+        <ul>
+            <li>P. X. Gao and S. Keshav,<a href="http://blizzard.cs.uwaterloo.ca/iss4e/wp-content/uploads/2013/10/buildsys-camera.pdf"> Optimal Personal Comfort Management Using SPOT+</a>, <em>Proc. BuildSys Workshop</em>, Nov 2013. <strong>Best Student Paper Award.</strong></li>
+            <li>P. X. Gao and S. Keshav,&nbsp;<a href="http://blizzard.cs.uwaterloo.ca/iss4e/wp-content/uploads/2012/03/personalAC.pdf">SPOT: A Smart Personalized Ofﬁce Thermal Control System</a>, <em>Proc. ACM e-Energy 2013</em>, May 2013.</li>
+        </ul>
+    </div>
+</section>
+
+<section id="resources-software" class="about-section">
+    <div class="row">
+        <h4>Software</h4>
+        <p>
+            All software components of SPOT* are maintained in a git repository.
+            Please refer to <a href="https://github.com/AlimoRabbani/SPOTstar">this repository</a> on github for the source code and documentation.
+        </p>
+        <ul>
+            <li>The device app: <a href="https://github.com/AlimoRabbani/SPOTstar/tree/master/device">https://github.com/AlimoRabbani/SPOTstar/tree/master/device</a></li>
+            <li>The control app: <a href="https://github.com/AlimoRabbani/SPOTstar/tree/master/control">https://github.com/AlimoRabbani/SPOTstar/tree/master/control</a></li>
+            <li>The db app: <a href="https://github.com/AlimoRabbani/SPOTstar/tree/master/db">https://github.com/AlimoRabbani/SPOTstar/tree/master/db</a></li>
+            <li>The web app: <a href="https://github.com/AlimoRabbani/SPOTstar/tree/master/web">https://github.com/AlimoRabbani/SPOTstar/tree/master/web</a></li>
+        </ul>
+    </div>
+</section>
+
+<section id="resources-hardware" class="about-section">
+    <div class="row">
+        <h4>Hardware</h4>
+        <ul>
+            <li><a href="http://www.raspberrypi.org/products/model-b-plus/">Raspberry Pi Model B+</a>, and <a href="www.edimax.com/en/produce_detail.php?pd_id=347">Edimax EW-7811Un</a> WiFi USB dongle</li>
+            <li>Actuation circuit <a href="{{ url_for('static', filename='files/control_circuit/spotstar_control_schematics_v3.pdf')}}">schematics</a> and <a href="{{ url_for('static', filename='files/control_circuit/spotstar_control_pcb_v3.zip')}}">PCB design</a></li>
+            <li>Sensing circuit <a href="{{ url_for('static', filename='files/sensing_circuit/spotstar_sensing_schematics_v2.pdf')}}">schematics</a> and <a href="{{ url_for('static', filename='files/sensing_circuit/spotstar_sensing_pcb_v2.zip')}}">PCB design</a></li>
+            <li>Hardware assembly <a href="{{ url_for('static', filename='files/assembly_images.zip')}}">images</a></li>
+            <li><a href="http://www.hammondmfg.com/dwg5sp.htm">Actuation box enclosure</a> (1598GSGYPBK) and <a href="http://www.hammondmfg.com/dwg9.htm">sensing box enclosure</a> (1551RBK)</li>
+        </ul>
+    </div>
+</section>
+
+<section id="resources-docs" class="about-section">
+    <div class="row">
+        <h4>Documents</h4>
+        <ul>
+            <li><a href="{{ url_for('static', filename='files/docs/manual.pdf')}}">SPOT* User Manual</a></li>
+        </ul>
+    </div>
+</section>
+
+</div>
+</div>
+</div> <!-- /container -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+<script src="{{ url_for('static', filename='js/jquery.scrollNav.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/scrolling-nav.js')}}"></script>
+{% endblock %}
