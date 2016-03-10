@@ -1,10 +1,11 @@
 <script>
 $(document).ready(function() {
-    $("#fftGraphLink").click(function(e) {
-        update_fft_graph($(this).attr('sample_id'));
-        e.preventDefault();
-    });
-
+    for(var i = 1; i <= {{ past_samples | length }}; i++) {
+        $('#fftGraphLink' + i).click(function(e) {
+            update_fft_graph($(this).attr('sample_id'));
+            e.preventDefault();
+        });
+    }
     var fftData = [];
 
     initialize_fft_graph("{{ past_samples[0]['sample_id'] }}");
@@ -21,8 +22,8 @@ $(document).ready(function() {
                 },
                 credits: {enabled: false},
                 title: {text: ''},
-                xAxis: {title: {text: "Frequency (Hz)"}, min: 0, max:5000},
-                yAxis: {min: 0, max: 2, tickInterval: 0.1},
+                xAxis: {title: {text: "Frequency (Hz)"}, min: 0, max:100, tickInterval: 10},
+                yAxis: {min: 0},
                 legend: {enabled: false},
                 plotOptions: {line: {lineWidth: 2}},
                 series: [{type: 'line', color: '#D80030', name: 'FFT', data: fftData}]

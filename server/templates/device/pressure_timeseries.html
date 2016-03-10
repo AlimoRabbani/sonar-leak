@@ -1,9 +1,11 @@
 <script>
 $(document).ready(function() {
-    $("#pressureGraphLink").click(function(e) {
-        update_pressure_graph($(this).attr('sample_id'));
-        e.preventDefault();
-    });
+    for(var i = 1; i <= {{ past_samples | length }}; i++) {
+        $('#pressureGraphLink' + i).click(function(e) {
+            update_pressure_graph($(this).attr('sample_id'));
+            e.preventDefault();
+        });
+    }
 
     var d = new Date();
     var timezoneOffset = d.getTimezoneOffset();
@@ -30,7 +32,7 @@ $(document).ready(function() {
                 credits: {enabled: false},
                 title: {text: ''},
                 xAxis: {title: {text: "Time (milliseconds)"}, minRange: 5000, min: 0},
-                yAxis: {title: {text: 'Pressure (Pa)'}, min: -20, max: 20, tickInterval: 5},
+                yAxis: {title: {text: 'Pressure (Pa)'}, min: 0},
                 legend: {enabled: false},
                 plotOptions: {line: {lineWidth: 2}},
                 series: [{type: 'line', color: '#19D11C', name: 'Pressure', data: pressureData}]

@@ -207,15 +207,15 @@ class Device:
         raw_data = Device.get_raw_data(sample_id)
         data = list()
         for line in raw_data:
-            value = round(float(line) / 0.000026607251, 2)
+            value = float(line) / 0.0000241395
             data.append(value)
-            data.append(0 - value)
+            # data.append(0 - value)
         original = np.array(data)
-        R = len(data) / 2000
+        R = len(data) / 1000
         pad_size = math.ceil(float(original.size)/R)*R - original.size
         original_padded = np.append(original, np.zeros(pad_size)*np.NaN)
         downsampled = scipy.nanmean(original_padded.reshape(-1, R), axis=1)
-        xf = np.linspace(0.0, len(data) / 20, num=2000)
+        xf = np.linspace(0.0, len(data) / 10, num=1000)
         result = zip(xf.tolist(), downsampled.tolist())
         return result
 
@@ -224,9 +224,9 @@ class Device:
         raw_data = Device.get_raw_data(sample_id)
         data = list()
         for line in raw_data:
-            value = float(line) / 0.000026607251
+            value = float(line) / 0.0000241395
             data.append(value)
-            data.append(0 - value)
+            # data.append(0 - value)
         # Number of samplepoints
         N = len(data)
         # sample spacing
@@ -234,12 +234,13 @@ class Device:
         y = np.array(data)
         yf = scipy.fftpack.fft(y)
         yf2 = 2.0/N * np.abs(yf[:N/2])
-        R = yf2.size / 1000
-        pad_size = math.ceil(float(yf2.size)/R)*R - yf2.size
-        original_padded = np.append(yf2, np.zeros(pad_size)*np.NaN)
-        downsampled = scipy.nanmean(original_padded.reshape(-1, R), axis=1)
-        xf = np.linspace(0.0, 1.0/(2.0*T), num=1000)
-        result = zip(xf.tolist(), downsampled.tolist())
+        # yf2n = np.linalg.norm(yf2)
+        # R = yf2.size / 1000
+        # pad_size = math.ceil(float(yf2.size)/R)*R - yf2.size
+        # original_padded = np.append(yf2, np.zeros(pad_size)*np.NaN)
+        # downsampled = scipy.nanmean(original_padded.reshape(-1, R), axis=1)
+        xf = np.linspace(0.0, 1.0/(100.0*T), N/100)
+        result = zip(xf.tolist(), yf2.tolist())
         return result
 
     @staticmethod
